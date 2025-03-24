@@ -1,0 +1,11 @@
+# 生成垂直渐变图像
+# 创建一张 256 行 1 列的渐变数据，从 0 到 1（注意：这里 0 对应下方，1 对应上方）
+gradient = np.linspace(0, 1, 256).reshape(-1, 1)
+# 使用 imshow 绘制这张图像，并设置 extent 与坐标轴匹配
+# 为实现“从折线到 x 轴由深至浅”，这里选用反转的 Blues 色图（Blues_r），
+# 使得上部（值为1）显示深色，下部（值为0）显示浅色
+im = ax.imshow(gradient, extent=[x.min(), x.max(), 0, y.max()],
+               origin='lower', aspect='auto', cmap=plt.cm.Blues_r, alpha=0.6)
+
+# 将渐变图像裁剪到多边形区域（即仅显示折线下方区域的渐变效果）
+im.set_clip_path(poly_patch)
