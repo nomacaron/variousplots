@@ -1,0 +1,46 @@
+import numpy as np
+import matplotlib.pyplot as plt
+import matplotlib.path as mpath
+import matplotlib.patches as mpatches
+
+# 数据
+x = np.array([0, 2, 3, 4])
+y = np.array([0.02387, 0.00918, 0.0055, 0.0036])
+
+fig, ax = plt.subplots(figsize=(7, 5))
+
+# 1. 绘制折线（黑色线条及数据点）
+ax.plot(x, y, color='black', linewidth=2, marker='o')
+
+# 2. 构造多边形，代表折线下方区域（从折线到 x 轴）
+# 这里先连接折线上各点，再连接 x 轴上的对应点（逆序）形成闭合区域
+x_poly = np.concatenate([x, x[::-1]])
+y_poly = np.concatenate([y, np.zeros_like(y)])
+polygon = np.vstack((x_poly, y_poly)).T
+poly_patch = mpatches.Polygon(polygon, closed=True, facecolor='none', edgecolor='none')
+ax.add_patch(poly_patch)
+
+# 3. 生成垂直渐变图像
+# 创建一张 256 行 1 列的渐变数据，从 0 到 1（注意：这里 0 对应下方，1 对应上方）
+gradient = np.linspace(0, 1, 256).reshape(-1, 1)
+# 使用 imshow 绘制这张图像，并设置 extent 与坐标轴匹配
+# 为实现“从折线到 x 轴由深至浅”，这里选用反转的 Blues 色图（Blues_r），
+# 使得上部（值为1）显示深色，下部（值为0）显示浅色
+im = ax.imshow(gradient, extent=[x.min(), x.max(), 0, y.max()],
+               origin='lower', aspect='auto', cmap=plt.cm.Blues_r, alpha=0.6)
+
+# 4. 将渐变图像裁剪到多边形区域（即仅显示折线下方区域的渐变效果）
+im.set_clip_path(poly_patch)
+
+# 5. 设置标签、标题和网格
+ax.set_xlabel("Treatment  (min)", fontsize=12)
+ax.set_ylabel("CAT Activity (U/10⁴ cell)", fontsize=12)
+ax.set_title("Trend Analysis of CAT Activity at 3.5 kV", fontsize=14, pad=10)
+ax.grid(True, linestyle='--', alpha=0.6)
+
+# 6. 调整坐标轴范围
+ax.set_xlim(0 , x.max()+0.25)
+ax.set_ylim(0, y.max()*1.1)
+
+plt.tight_layout()
+plt.show()
