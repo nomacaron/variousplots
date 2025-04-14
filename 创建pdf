@@ -1,0 +1,78 @@
+from fpdf import FPDF
+
+class PDFToolkit(FPDF):
+    def header(self):
+        self.set_font('Helvetica', 'B', 14)
+        self.cell(0, 10, 'IELTS Task 1 Chart-Type Specific Expression Toolkit', ln=True, align='C')
+        self.ln(4)
+
+    def chapter_title(self, title):
+        self.set_font('Helvetica', 'B', 12)
+        self.set_text_color(40, 40, 128)
+        self.cell(0, 10, title, ln=True)
+        self.set_text_color(0, 0, 0)
+
+    def chapter_body(self, text):
+        self.set_font('Helvetica', '', 11)
+        self.multi_cell(0, 8, text)
+        self.ln()
+
+pdf = PDFToolkit()
+pdf.add_page()
+
+# Chart types and their useful expressions
+chart_sections = {
+    "Bar Charts": """
+- The highest/lowest bar belongs to...
+- A saw a significant increase, whereas B remained steady.
+- Compared to ..., the figure for ... was almost double.
+- The distribution of ... was uneven across categories.
+- There was a dramatic rise in ..., particularly in ...
+""",
+    "Line Graphs": """
+- The trend fluctuated mildly/dramatically over the period.
+- A steady upward/downward trend can be seen in...
+- From 2010 to 2015, the figure dropped sharply, then levelled off.
+- The number peaked at ..., before falling back.
+- This graph reveals a consistent pattern of growth/decline.
+""",
+    "Pie Charts": """
+- ... accounted for the largest/smallest portion of the total.
+- The share of ... was nearly equal to that of ...
+- A substantial proportion of ... was allocated to ...
+- The distribution was dominated by ...
+- Compared to ..., ... held a marginal share.
+""",
+    "Tables": """
+- The figures presented in the table illustrate...
+- In contrast to ..., the value of ... was significantly higher/lower.
+- A clear difference can be observed between ...
+- The highest value was recorded in ...
+- Among all categories, ... had the lowest ranking.
+""",
+    "Process Diagrams": """
+- The process begins with ..., followed by ...
+- After being ..., the material is then ...
+- Subsequently, it undergoes a transformation into ...
+- The final product is obtained after ...
+- This is a linear/cyclic process involving ... main steps.
+""",
+    "Maps": """
+- The area experienced considerable transformation between ... and ...
+- Several new facilities were added, including ...
+- The original structure was replaced by ...
+- A comparison of the maps reveals extensive urban development.
+- There was a shift from ... to ... in terms of land use.
+"""
+}
+
+# Add all chart sections
+for title, content in chart_sections.items():
+    pdf.chapter_title(title)
+    pdf.chapter_body(content)
+
+# Save PDF
+pdf_path = "/Users/a10-2108/Documents/python /pythonProject1/IELTS/IELTS_Task1_Chart_Expression_Library.pdf"
+pdf.output(pdf_path)
+
+
